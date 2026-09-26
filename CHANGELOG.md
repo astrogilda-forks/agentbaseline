@@ -18,6 +18,10 @@ never reused.
   27 October; the homepage names it under the tenets and again in a section after the white
   paper. Comments go through an issue form that applies the
   `software-factory` label; CONTRIBUTING says how. *(2026-10-13, Matthew Creager, Keycard)*
+- A crosswalk to the in-toto Attestation Framework, `crosswalks/in-toto.yaml`: for each of the 35
+  controls, the attestation predicates that can carry its evidence of achievement, what they leave
+  out, and a test method a third party can run. 19 controls map partially and 16 have no
+  counterpart; no control maps in full. *(2026-09-25, Sankalp Gilda)*
 - The community Slack is linked from the utility bar on every page and, on the homepage,
   from the review section, with the invite address in one place in `hugo.toml`.
   CONTRIBUTING and GOVERNANCE say what belongs in Slack and what belongs in an issue, and
