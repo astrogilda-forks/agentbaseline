@@ -22,6 +22,10 @@ never reused.
   that exist in `controls.yaml`, give every control exactly one row, and carry entries and a
   note on each; the README table must list every file. A crosswalk filed before an
   identifier moves now fails instead of describing the wrong requirement. *(2026-09-26, Sankalp Gilda)*
+- A crosswalk to the in-toto Attestation Framework, `crosswalks/in-toto.yaml`: for each of the 35
+  controls, the attestation predicates that can carry its evidence of achievement, what they leave
+  out, and a test method a third party can run. 19 controls map partially and 16 have no
+  counterpart; no control maps in full. *(2026-09-25, Sankalp Gilda)*
 - The community Slack is linked from the utility bar on every page and, on the homepage,
   from the review section, with the invite address in one place in `hugo.toml`.
   CONTRIBUTING and GOVERNANCE say what belongs in Slack and what belongs in an issue, and
