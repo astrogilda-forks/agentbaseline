@@ -47,6 +47,10 @@ never reused.
   the 35 controls, the CIS Safeguards it maps to, what they leave out, and a test method a
   third party can run. 34 controls map partially and 1 has no counterpart; none maps in
   full. *(2026-09-26, Sankalp Gilda)*
+- A crosswalk to the AICPA Trust Services Criteria used in SOC 2 reports,
+  `crosswalks/soc2.yaml`: for each of the 35 controls, the Trust Services Criteria it maps
+  to, what they leave out, and a test method a third party can run. 32 controls map
+  partially and 3 have no counterpart; none maps in full. *(2026-09-26, Sankalp Gilda)*
 - The community Slack is linked from the utility bar on every page and, on the homepage,
   from the review section, with the invite address in one place in `hugo.toml`.
   CONTRIBUTING and GOVERNANCE say what belongs in Slack and what belongs in an issue, and

@@ -20,6 +20,7 @@ contribution we need most.
 | in-toto Attestation Framework | proposed | `in-toto.yaml` |
 | EU AI Act | proposed | `eu-ai-act.yaml` |
 | CIS Controls | proposed | `cis.yaml` |
+| SOC 2 | proposed | `soc2.yaml` |
 
 ## Filing one
 
