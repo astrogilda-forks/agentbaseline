@@ -21,6 +21,7 @@ contribution we need most.
 | EU AI Act | proposed | `eu-ai-act.yaml` |
 | CIS Controls | proposed | `cis.yaml` |
 | SOC 2 | proposed | `soc2.yaml` |
+| NIST SP 800-53 | proposed | `nist-sp-800-53.yaml` |
 
 ## Filing one
 
