@@ -19,6 +19,7 @@ contribution we need most.
 | CIS Controls | wanted | `cis.yaml` |
 | in-toto Attestation Framework | proposed | `in-toto.yaml` |
 | EU AI Act | proposed | `eu-ai-act.yaml` |
+| CIS Controls | proposed | `cis.yaml` |
 
 ## Filing one
 
