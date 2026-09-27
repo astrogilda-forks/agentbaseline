@@ -18,6 +18,10 @@ never reused.
   27 October; the homepage names it under the tenets and again in a section after the white
   paper. Comments go through an issue form that applies the
   `software-factory` label; CONTRIBUTING says how. *(2026-10-13, Matthew Creager, Keycard)*
+- `bin/check-crosswalks`, run in CI: every file in `crosswalks/` must cite only identifiers
+  that exist in `controls.yaml`, give every control exactly one row, and carry entries and a
+  note on each; the README table must list every file. A crosswalk filed before an
+  identifier moves now fails instead of describing the wrong requirement. *(2026-09-26, Sankalp Gilda)*
 - The community Slack is linked from the utility bar on every page and, on the homepage,
   from the review section, with the invite address in one place in `hugo.toml`.
   CONTRIBUTING and GOVERNANCE say what belongs in Slack and what belongs in an issue, and
