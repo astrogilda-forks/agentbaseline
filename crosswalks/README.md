@@ -11,15 +11,11 @@ contribution we need most.
 | Framework | Status | File |
 |---|---|---|
 | NIST AI RMF | proposed | `nist-ai-rmf.yaml` |
-| ISO/IEC 42001 | wanted | `iso-42001.yaml` |
-| NIST AI RMF | wanted | `nist-ai-rmf.yaml` |
 | ISO/IEC 42001 | proposed | `iso-42001.yaml` |
-| OWASP | wanted | `owasp.yaml` |
 | OWASP | proposed | `owasp.yaml` |
-| CIS Controls | wanted | `cis.yaml` |
+| CIS Controls | proposed | `cis.yaml` |
 | in-toto Attestation Framework | proposed | `in-toto.yaml` |
 | EU AI Act | proposed | `eu-ai-act.yaml` |
-| CIS Controls | proposed | `cis.yaml` |
 | SOC 2 | proposed | `soc2.yaml` |
 | NIST SP 800-53 | proposed | `nist-sp-800-53.yaml` |
 | ISO/IEC 27001 | proposed | `iso-27001.yaml` |
