@@ -1,0 +1,613 @@
+# Agent Baseline controls against the EU AI Act, Regulation (EU) 2024/1689.
+#
+# Each row keeps the three keys crosswalks/README.md asks for: control,
+# entries, note. Two optional keys follow them:
+#
+#   test_method  how a third party checks the control, with the pass
+#                condition. The method ends by saying what the tools in
+#                verify_with check and what they do not, or that no tool is
+#                listed.
+#   verify_with  public tools, pinned, that run part of the check. Present
+#                only where the test method runs one.
+#
+# Delete both and the file is the README's shape exactly.
+#
+# Entries cite the Official Journal text (OJ L, 2024/1689, 12.7.2024).
+# Art.12(2)(a) is Article 12, paragraph 2, point (a); Art.3(23) is point (23)
+# of Article 3; AnnexIV.2(g) is Annex IV, point 2(g). Where an article has
+# unnumbered subparagraphs, the note says which one.
+#
+# Notes open with full, partial or none. None means the Regulation sets no
+# corresponding obligation; the gap is recorded rather than papered over.
+
+framework: EU AI Act
+version: "Regulation (EU) 2024/1689"
+scope: >-
+  Maps each control to the obligations the Regulation places on providers
+  (Articles 9 to 21, 43, 49, 72 and 73) and deployers (Article 26) of
+  high-risk AI systems, which is where its technical requirements sit. An
+  agent is in scope only when it is, or is part of, a high-risk AI system
+  under Article 6. The Regulation states outcomes for a system placed on the
+  market; it rarely prescribes a mechanism and says little about runtime
+  authority, credentials or delegation between agents, so most rows are
+  partial and the authority controls have no counterpart.
+source: https://eur-lex.europa.eu/eli/reg/2024/1689/oj
+mappings:
+
+  # ---------------------------------------------------------------- Discover
+
+  - control: DIS-01
+    entries: [Art.49(1), Art.26(8), AnnexIV.1(a)]
+    note: >-
+      partial — a provider registers each Annex III high-risk system in the
+      EU database before placing it on the market (Art.49(1)), public-body
+      deployers register their use (Art.26(8)), and the technical
+      documentation names the system's version and its relation to previous
+      versions (AnnexIV.1(a)). The registration is per system on the market,
+      not an authoritative internal record of every agent deployment.
+    test_method: >-
+      Take the agents observed acting during a sampling window from runtime
+      records and resolve each to the registry. Pass when every observed
+      agent resolves to exactly one record whose version matches the one
+      documented for it, and every agent that is part of an Annex III system
+      also has an EU database registration. No tool is listed for this
+      check.
+
+  - control: DIS-02
+    entries: [Art.6(2), Art.6(3), AnnexIV.1(a), Art.17(1)(m), Art.26(2)]
+    note: >-
+      partial — classification as high-risk (Art.6(2), with the derogation in
+      Art.6(3)) selects which obligations apply, which is the Regulation's
+      version of a risk class selecting an assurance profile. Intended
+      purpose is documented (AnnexIV.1(a)), the quality management system
+      sets out an accountability framework (Art.17(1)(m)) and deployers
+      assign oversight to named competent persons (Art.26(2)). It does not
+      ask for a named business owner and technical owner per agent.
+    test_method: >-
+      For a sample of registered agents, check that business purpose,
+      business owner, technical owner and risk class are present, and that
+      the risk class records whether the system is high-risk under Article 6
+      and, if a derogation under Art.6(3) is claimed, which condition. Pass
+      when no sampled record lacks a field and every classification states
+      its basis. No tool is listed for this check.
+
+  - control: DIS-03
+    entries: [Art.18(1), AnnexIV.1(a), AnnexIV.6]
+    note: >-
+      partial — the provider keeps the technical documentation, the changes
+      approved by notified bodies and their decisions for ten years
+      (Art.18(1), points (a), (c) and (d)), and documents the version's
+      relation to previous versions (AnnexIV.1(a)) and the relevant changes
+      made through the lifecycle (AnnexIV.6). There is no exception status,
+      exception owner or expiry date.
+    test_method: >-
+      Pick a retired agent and an agent with an active exception. Pass when
+      the registry returns the retired agent's last approved version and the
+      date it was retired, the exception names an accountable owner and an
+      expiry date that has not passed, and every previously approved version
+      of a sampled agent can still be produced. No tool is listed for this
+      check.
+
+  - control: DIS-04
+    entries: [AnnexIV.1(c), AnnexIV.2(a), Art.25(4)]
+    note: >-
+      partial — the technical documentation lists the versions of relevant
+      software (AnnexIV.1(c)) and records recourse to pre-trained systems or
+      tools provided by third parties and how they were integrated
+      (AnnexIV.2(a)), and a provider agrees in writing with the third parties
+      that supply its tools, services and components what information they
+      provide (Art.25(4)). This is per system; nothing asks for a corporate
+      inventory of models, instructions, MCP servers, skills or plugins made
+      available for use.
+    test_method: >-
+      Compare the components an agent loads at runtime against the
+      component registry. Pass when every loaded model, instruction set, MCP
+      server, skill, plugin and tool resolves to a registry entry with source,
+      owner and the exact version loaded. No tool is listed for this check.
+
+  - control: DIS-05
+    entries: [AnnexIV.1(b), AnnexIV.2(c), Art.72(2)]
+    note: >-
+      partial — the documentation describes how the system interacts with
+      other software and AI systems (AnnexIV.1(b)) and how its components
+      build on or feed into each other (AnnexIV.2(c)), and post-market
+      monitoring includes, where relevant, an analysis of the interaction
+      with other AI systems (Art.72(2)). It does not ask for runtime-resolved
+      versions or for the agents and runs affected when a component is
+      compromised to be identifiable.
+    test_method: >-
+      Name a component version as compromised and query the mapping. Pass
+      when it returns every agent and every run in a stated window that
+      resolved that version, including through a downstream agent, and the
+      list agrees with runtime records. No tool is listed for this check.
+
+  - control: DIS-06
+    entries: []
+    note: >-
+      none — the Regulation asks for cybersecurity appropriate to the risks
+      (Art.15(5)) but never for a map of the identities and credentials a
+      system may use or of what those identities permit.
+    test_method: >-
+      For a sample of agents, enumerate the identities each can use and the
+      permissions each grants, including through components, and compare
+      with the effective-access map; for a sample of material runs, compare
+      the recorded delegated authority with the authority the credentials
+      actually carried. Pass when nothing is found that the map omits. No
+      tool is listed for this check.
+
+  - control: DIS-07
+    entries: []
+    note: >-
+      none — post-market monitoring collects data on a system's performance
+      (Art.72(2)); nothing asks an organisation to reconcile an inventory of
+      agents and components against source, cloud, identity or network
+      evidence.
+    test_method: >-
+      Plant an unregistered agent and an unregistered component in a
+      monitored environment. Pass when reconciliation reports both as
+      discrepancies within its stated cycle. No tool is listed for this
+      check.
+
+  # ----------------------------------------------------------------- Contain
+
+  - control: CON-01
+    entries: [Art.16(f), Art.43(4), Art.9(8), Art.26(8)]
+    note: >-
+      partial — a high-risk system undergoes conformity assessment before it
+      is placed on the market or put into service (Art.16(f)) and again
+      after a substantial modification (Art.43(4)), it is tested before
+      either (Art.9(8)), and a public-body deployer must not use a system
+      missing from the EU database (Art.26(8)). The gate is on placing a
+      system on the market, not a technical block on deploying an agent or a
+      single component at runtime.
+    test_method: >-
+      Attempt three deployments: an unregistered agent, a registered agent
+      whose release has no validation evidence, and a release whose signed
+      admission decision has been altered. Pass when all three are blocked
+      and a correctly admitted release deploys. For the third case, the
+      verifier the deployment gate uses to check admission decisions is run
+      against a pinned corpus: `pip install agent-evidence-vectors==0.18.1`
+      then `agent-evidence-vectors --corpus vectors-agent-change-admission
+      --verifier './your-verifier'`, where the verifier is called as
+      `your-verifier case.json --json` for each case. Pass when the run
+      reports 35 of 35 cases answered and 0 disagreements. The corpus checks
+      that the verifier refuses a decision with an untrusted key, a bad
+      signature, a wrong predicate, a missing or failed gate, or a report
+      whose digest does not match; it does not check that the gate is wired
+      into the deployment path.
+    verify_with:
+      - https://github.com/probityai/agent-evidence-vectors/tree/v0.18.1/vectors-agent-change-admission
+
+  - control: CON-02
+    entries: [Art.9(2)(a), Art.9(2)(b), Art.9(5)(a)]
+    note: >-
+      partial — the risk management system identifies known and reasonably
+      foreseeable risks, including under reasonably foreseeable misuse
+      (Art.9(2), points (a) and (b)), and eliminates or reduces them by
+      design where technically feasible (Art.9(5), point (a)). Nothing names
+      combinations of capabilities or asks for them to be modelled as the
+      system's inputs, tools and permissions change.
+    test_method: >-
+      Give a test agent untrusted input, access to private data and an
+      outbound channel, one capability at a time and then together. Pass
+      when the combination is detected and removed or constrained before the
+      agent can act on all three, and when a new combination introduced by a
+      tool change is detected without a rule written for it. No tool is
+      listed for this check.
+
+  - control: CON-03
+    entries: [Art.15(4), Art.15(5)]
+    note: >-
+      partial — the system must be as resilient as possible to errors and
+      faults arising from its interaction with other systems (Art.15(4)) and
+      resilient against attempts by unauthorised third parties to alter its
+      use or outputs (Art.15(5)). The Regulation names the outcome; it does
+      not ask for agent-controlled code to run inside a boundary or for its
+      filesystem, network, credentials or duration to be scoped.
+    test_method: >-
+      From inside the boundary, attempt to read a host credential, reach an
+      unapproved network destination, write outside the permitted paths,
+      exceed the process and duration limits, and persist state past the
+      run. Pass when every attempt fails and is recorded. No tool is listed
+      for this check.
+
+  - control: CON-04
+    entries: []
+    note: >-
+      none — deployers use a system in accordance with its instructions for
+      use (Art.26(1)), which bounds the purpose it is used for, not the
+      runtime scope it is granted; nothing describes centrally governed,
+      versioned capability profiles.
+    test_method: >-
+      For a sample of runs, compare the scope each was granted with the
+      profile assigned to its team or use case, and change a profile through
+      the assignment process. Pass when no run exceeded its profile and the
+      change is recorded with its approver and the new version. No tool is
+      listed for this check.
+
+  # --------------------------------------------------------------- Authorize
+
+  - control: AUT-01
+    entries: [Art.12(1), Art.12(2), Art.12(3)(d)]
+    note: >-
+      partial — the system must allow automatic recording of events over its
+      lifetime (Art.12(1)) at a level of traceability appropriate to its
+      purpose (Art.12(2)). Only for remote biometric identification does the
+      Regulation name who must appear in the record, the natural persons who
+      verified the result (Art.12(3), point (d)). It does not ask for each
+      action to carry the agent identity, initiating principal, run, task,
+      target and time.
+    test_method: >-
+      Trigger consequential actions from three agents, one acting for a user,
+      one under an approved autonomous purpose and one as a downstream agent.
+      Pass when each action's record names the agent, the initiating
+      principal or approved purpose, deployment, run, task, target and time,
+      and the downstream record names the originating principal. No tool is
+      listed for this check.
+
+  - control: AUT-02
+    entries: []
+    note: >-
+      none — human oversight is to be commensurate with the system's level
+      of autonomy (Art.14(3)), but the Regulation never asks for authority to
+      be determined per action from purpose, task, target, data scope,
+      limits or validity period.
+    test_method: >-
+      Issue the same action request under two tasks, one that covers it and
+      one that does not, and once after the grant's validity period. Pass
+      when only the covered, in-period request is authorised and each
+      decision records the attributes it was taken on. No tool is listed for
+      this check.
+
+  - control: AUT-03
+    entries: []
+    note: >-
+      none — the Regulation does not address delegation between agents.
+    test_method: >-
+      Have an agent delegate to a downstream agent and request more authority
+      for it than it holds itself. Pass when the downstream grant is no
+      larger than the caller's, the originating context is carried, and each
+      hop is recorded. No tool is listed for this check.
+
+  - control: AUT-04
+    entries: []
+    note: >-
+      none — cybersecurity measures are to be appropriate to the risks
+      (Art.15(5)); credential lifetime, scope and where credentials are held
+      are not addressed.
+    test_method: >-
+      Search model context, memory and agent-readable files during and after
+      a run for credentials, and replay an issued credential after its
+      lifetime and against another resource. Pass when no credential is
+      found and both replays are refused. No tool is listed for this check.
+
+  - control: AUT-05
+    entries: [Art.14(1), Art.14(4)(d), Art.14(5), Art.26(2)]
+    note: >-
+      partial — the system must be effectively overseeable by natural
+      persons (Art.14(1)) who can decide not to use it or override its output
+      (Art.14(4), point (d)), and deployers assign that oversight to
+      competent persons (Art.26(2)). Approval of a specific action before it
+      happens is required only for remote biometric identification, where two
+      persons must verify an identification before any action is taken on it
+      (Art.14(5)). There is no autonomy or impact threshold that routes an
+      action to approval.
+    test_method: >-
+      Request an action that is within the agent's authority but above its
+      approved autonomy threshold. Pass when it is held until a person or
+      decision point independent of the agent approves that specific action,
+      a refusal stops it, and an approval cannot be reused for a different
+      action. No tool is listed for this check.
+
+  - control: AUT-06
+    entries: [Art.15(4)]
+    note: >-
+      partial — robustness may be achieved through technical redundancy
+      including backup or fail-safe plans (Art.15(4), second subparagraph).
+      Fail-safe is permitted, not required, and the Regulation does not say
+      what a system must do when identity, policy or approval cannot be
+      verified.
+    test_method: >-
+      Make the policy service, the approval service and the target-state
+      check unreachable in turn and request a material action each time.
+      Pass when every request is denied or halted and none proceeds on a
+      cached or default allow. No tool is listed for this check.
+
+  - control: AUT-07
+    entries: []
+    note: >-
+      none — the Regulation does not address re-verification of the
+      initiating principal when an action's risk exceeds the session's
+      assurance.
+    test_method: >-
+      Within one session, request a low-risk action and then one whose risk
+      exceeds the session's assurance. Pass when the second waits for
+      re-authentication, a stronger factor or renewed consent and fails if
+      that is refused. No tool is listed for this check.
+
+  - control: AUT-08
+    entries: []
+    note: >-
+      none — the Regulation does not address temporary elevation of an
+      agent's authority.
+    test_method: >-
+      Request elevation for an action outside the current grant. Pass when
+      the elevation is scoped to that action, expires on time without
+      intervention, and is recorded with requester, justification and
+      approver. No tool is listed for this check.
+
+  - control: AUT-09
+    entries: []
+    note: >-
+      none — the Regulation does not address binding credentials to their
+      holder.
+    test_method: >-
+      Copy an issued credential or action permit to another host and use it
+      there. Pass when the use is refused because the presenter cannot prove
+      possession of the bound key. No tool is listed for this check.
+
+  # ----------------------------------------------------------------- Observe
+
+  - control: OBS-01
+    entries: [Art.12(1), Art.12(2), Art.12(3), Art.13(3)(f)]
+    note: >-
+      partial — logging must record events relevant to identifying risk
+      situations and substantial modifications, post-market monitoring and
+      the deployer's monitoring of operation (Art.12(2), points (a) to (c)),
+      and the instructions for use describe how deployers collect, store and
+      interpret the logs (Art.13(3), point (f)). Fields are named only for
+      remote biometric identification (Art.12(3)): period of use, reference
+      database, matched input and the persons who verified the result. The
+      agent-specific fields (composition, model, tool invocation, policy
+      decision, requested against executed action) are not named.
+    test_method: >-
+      Run a scripted task that calls a model and two tools and is subject to
+      one policy decision. Pass when the telemetry for that run carries every
+      field the control lists, and requested and executed action are recorded
+      separately where they differ. No tool is listed for this check.
+
+  - control: OBS-02
+    entries: [Art.12(2), Art.72(2)]
+    note: >-
+      partial — logs must give traceability of the system's functioning
+      (Art.12(2)) and post-market monitoring analyses the interaction with
+      other AI systems where relevant (Art.72(2)). Nothing asks for a stable
+      identifier linking events across agents, tools, enforcement points and
+      target systems.
+    test_method: >-
+      Run a task that crosses two agents, an MCP server, a policy point and a
+      target system. Pass when one run or trace identifier retrieves every
+      event of the task from each of them and nothing else. No tool is listed
+      for this check.
+
+  - control: OBS-03
+    entries: [Art.14(4)(a), Art.26(5), Art.72(2), Art.15(4)]
+    note: >-
+      partial — overseers must be able to detect anomalies and unexpected
+      performance (Art.14(4), point (a)), deployers monitor operation
+      (Art.26(5)), providers collect and analyse performance data through
+      the lifetime (Art.72(2)), and systems that keep learning address
+      feedback loops (Art.15(4), third subparagraph). Monitoring is against
+      compliance and performance, not against a per-agent behavioural
+      baseline of data access, tools, destinations and consumption.
+    test_method: >-
+      After a baseline period, change an agent's behaviour along one axis at
+      a time: a new data source, a new tool, a new destination, a rise in
+      token use. Pass when each change is flagged within the stated window
+      and a change within the approved purpose is not. No tool is listed for
+      this check.
+
+  - control: OBS-04
+    entries: [Art.9(2)(b), Art.14(4)(a), AnnexIV.3]
+    note: >-
+      partial — risks under reasonably foreseeable misuse are estimated
+      (Art.9(2), point (b)), foreseeable unintended outcomes are documented
+      (AnnexIV.3) and overseers can detect anomalies (Art.14(4), point (a)).
+      The Regulation does not ask for detection of a single permitted action
+      that is inconsistent with the task.
+    test_method: >-
+      Seed a task where the permitted path includes committing a credential
+      to an approved repository, and other permitted but off-task actions.
+      Pass when each is detected and raised before or immediately after
+      execution. No tool is listed for this check.
+
+  - control: OBS-05
+    entries: [Art.12(1), Art.12(2)(a), AnnexIV.2(g)]
+    note: >-
+      partial — logs support identifying situations in which the system
+      presents a risk (Art.12(2), point (a)) and test logs and reports are
+      kept for validation (AnnexIV.2(g)). Nothing asks for each material
+      outcome to be linked to the intent, authority, approvals and target
+      results behind it.
+    test_method: >-
+      Pick a material outcome in a target system and trace it back. Pass when
+      the evidence returns the business intent, identities, runtime
+      composition, delegated authority, policy decision, approvals, actions,
+      validation and the target-system result, each referring to the same
+      run. No tool is listed for this check.
+
+  - control: OBS-06
+    entries: [Art.12(1), Art.19(1), Art.26(6), Art.21(2), Art.18(1)]
+    note: >-
+      partial — logs are recorded automatically over the system's lifetime
+      (Art.12(1)) and kept for at least six months by the provider and by the
+      deployer, to the extent under their control (Art.19(1), Art.26(6)); a
+      competent authority can request access to them (Art.21(2)); the
+      documentation is kept for ten years (Art.18(1)). The Regulation does
+      not ask for the logs to be integrity-protected, checked for
+      completeness, redacted or encrypted, or held under legal hold, so a
+      log an authority receives under Art.21(2) can have been edited or cut
+      short and still meet the text.
+    test_method: >-
+      Export a record set with its verification material and verify it on a
+      machine the operator does not control. Pass when the intact set
+      verifies, and a set with a record altered, a middle record removed,
+      records reordered, the tail removed after an externalised checkpoint,
+      or the store rolled back to an earlier snapshot is rejected. Certify
+      the verifier used for that check against a pinned corpus:
+      `pip install agent-evidence-vectors==0.18.1` then
+      `agent-evidence-vectors --corpus vectors-anchored-chain --verifier
+      './your-verifier'`, where the verifier is called as
+      `your-verifier case.json --json` and exits 0 for verified, 1 for
+      rejected. Pass when the run reports 14 of 14 cases answered and 0
+      disagreements. The corpus checks alteration, deletion, reordering,
+      replay from another chain, rollback and tail truncation; it does not
+      check timestamps, access control, redaction, encryption, retention,
+      deletion or legal hold.
+    verify_with:
+      - https://github.com/probityai/agent-evidence-vectors/tree/v0.18.1/vectors-anchored-chain
+
+  # ---------------------------------------------------------------- Validate
+
+  - control: VAL-01
+    entries: [Art.9(6), Art.9(8), Art.15(5), Art.43(4)]
+    note: >-
+      partial — testing identifies risk management measures (Art.9(6)) and
+      is carried out against prior defined metrics and probabilistic
+      thresholds before the system is placed on the market (Art.9(8)),
+      including where appropriate against adversarial examples and other
+      AI-specific attacks (Art.15(5), third subparagraph); a substantial
+      modification triggers a new conformity assessment (Art.43(4)). The
+      scenarios are not required to be derived from the agent's tools, data
+      access and action boundaries.
+    test_method: >-
+      Review the test plan for one agent and re-run it. Pass when each
+      scenario traces to a tool, data source or action boundary of that agent
+      in its deployed configuration, each has an expected outcome and a
+      failure threshold, the results meet them, and a material change since
+      the last run triggered a new run. No tool is listed for this check.
+
+  - control: VAL-02
+    entries: [Art.17(1)(d), AnnexIV.2(g)]
+    note: >-
+      partial — the quality management system sets the examination, test and
+      validation procedures before, during and after development
+      (Art.17(1), point (d)), and test logs and reports are dated and signed
+      (AnnexIV.2(g)). This is for the system as a whole; it does not ask for
+      each releasable version of an internally built component to be tested
+      on its own.
+    test_method: >-
+      Pick the last three releases of an internally built component. Pass
+      when each has a test record for that exact version with checks
+      appropriate to its type, abuse scenarios from its inputs and
+      privileges, and a recorded pass against stated criteria. No tool is
+      listed for this check.
+
+  - control: VAL-03
+    entries: []
+    note: >-
+      none — the Regulation does not address the code, configuration or other
+      artifacts an AI system produces for its deployer.
+    test_method: >-
+      Submit an agent-written change that fails a security check a human
+      change would face. Pass when it is held to the same checks and blocked
+      for the same reason. No tool is listed for this check.
+
+  - control: VAL-04
+    entries: [Art.14(4)(c), Art.14(4)(d), Art.14(5)]
+    note: >-
+      partial — overseers must be able to interpret the output and to
+      disregard, override or reverse it (Art.14(4), points (c) and (d)), and
+      for remote biometric identification an identification is verified by
+      two persons before any action is taken on it (Art.14(5)). Validation
+      of a proposed outcome before a high-impact action is finalised is not
+      required in general.
+    test_method: >-
+      Run an agent through a set of completed actions with known correct
+      outcomes, including one wrong, and propose one high-impact action. Pass
+      when the wrong outcome is caught by the validation step and the
+      high-impact action is validated before it is finalised. No tool is
+      listed for this check.
+
+  # ----------------------------------------------------------------- Respond
+
+  - control: RES-01
+    entries: [Art.14(4)(e), Art.26(5), Art.20(1)]
+    note: >-
+      partial — overseers can interrupt the system through a stop button or
+      similar procedure that halts it in a safe state (Art.14(4), point (e)),
+      deployers suspend use when they consider it presents a risk
+      (Art.26(5)), and providers disable or withdraw a non-conforming system
+      (Art.20(1)). Revoking the credentials, permits and delegated grants an
+      agent holds is not addressed.
+    test_method: >-
+      Trigger the stop for a running agent that holds a credential, a permit
+      and a delegated grant. Pass when it stops within the stated response
+      period, accepts no new work, and each of the three is refused when
+      presented afterwards. No tool is listed for this check.
+
+  - control: RES-02
+    entries: [Art.20(1), Art.79(2)]
+    note: >-
+      partial — a provider withdraws, disables or recalls a non-conforming
+      system (Art.20(1)) and a market surveillance authority can require it
+      (Art.79(2), second subparagraph). This acts on the system, not on a
+      model, tool, skill or MCP server shared between systems.
+    test_method: >-
+      Mark one agent version and one shared component as quarantined. Pass
+      when every subsequent attempt to load either, by any agent, is refused.
+      No tool is listed for this check.
+
+  - control: RES-03
+    entries: [Art.73(6), Art.20(2), Art.19(1), Art.26(6)]
+    note: >-
+      partial — after a serious incident the provider investigates, assesses
+      the risk and takes corrective action, and must not alter the system in
+      a way that may affect the evaluation of causes before informing the
+      authorities (Art.73(6)); a provider aware of a risk investigates its
+      causes (Art.20(2)); logs are kept for at least six months (Art.19(1),
+      Art.26(6)). Identifying the affected records, customers and
+      transactions is not required.
+    test_method: >-
+      Declare an incident for one agent version. Pass when the preserved
+      record set for the affected window is exported, still verifies, and
+      would be rejected if a record had been removed or the store rolled
+      back after the incident was declared; and the scoping lists the
+      affected resources, records, customers, transactions, versions and
+      dependencies. Certify the verifier used against a pinned corpus:
+      `pip install agent-evidence-vectors==0.18.1` then
+      `agent-evidence-vectors --corpus vectors-anchored-chain --verifier
+      './your-verifier'`; pass when it reports 14 of 14 cases answered and 0
+      disagreements. The corpus checks the preserved records' integrity and
+      completeness against an anchor; it does not check the impact scoping.
+    verify_with:
+      - https://github.com/probityai/agent-evidence-vectors/tree/v0.18.1/vectors-anchored-chain
+
+  - control: RES-04
+    entries: [Art.15(4), Art.14(4)(e)]
+    note: >-
+      partial — technical redundancy may include backup or fail-safe plans
+      (Art.15(4), second subparagraph) and an interrupt halts the system in a
+      safe state (Art.14(4), point (e)). A non-agent fallback for essential
+      workflows is not required.
+    test_method: >-
+      Stop the agent serving an essential workflow and request an unverified
+      high-impact action. Pass when the action is denied and the workflow
+      completes through the approved non-agent fallback. No tool is listed
+      for this check.
+
+  - control: RES-05
+    entries: [Art.43(4), Art.3(23), Art.25(1)(b), Art.15(5)]
+    note: >-
+      partial — a substantial modification, a change not foreseen in the
+      initial assessment that affects compliance (Art.3(23)), requires a new
+      conformity assessment (Art.43(4)) and makes whoever made it the
+      provider (Art.25(1), point (b)); the system must resist unauthorised
+      alteration of its use or outputs (Art.15(5)). The Regulation reviews a
+      change after it is made; it does not ask for an unapproved change to a
+      component's code, instructions, tool definitions or permissions to be
+      blocked.
+    test_method: >-
+      Change an approved component's instructions, a tool definition and its
+      requested permissions, each without approval. Pass when every changed
+      version is refused at load, and an approved change carrying a valid
+      signed admission decision loads. Certify the verifier that checks
+      those decisions against a pinned corpus:
+      `pip install agent-evidence-vectors==0.18.1` then
+      `agent-evidence-vectors --corpus vectors-agent-change-admission
+      --verifier './your-verifier'`; pass when it reports 35 of 35 cases
+      answered and 0 disagreements. The corpus checks that a forged,
+      incomplete or mismatched admission decision is refused; it does not
+      check that the load path consults the verifier.
+    verify_with:
+      - https://github.com/probityai/agent-evidence-vectors/tree/v0.18.1/vectors-agent-change-admission

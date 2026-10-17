@@ -9,6 +9,11 @@ never reused.
 ## [Unreleased]
 
 ### Added
+- An EU AI Act crosswalk, `crosswalks/eu-ai-act.yaml`, mapping all 35 controls to
+  Regulation (EU) 2024/1689 as published in the Official Journal. 25 controls map partially
+  and 10 have no counterpart; none maps in full. Every row carries a test method, and the
+  rows whose method certifies a verifier name the pinned tool that does it.
+  *(2026-10-16, Sankalp Gilda)*
 - *The Secure Software Factory: A Reference Architecture*, version 1 (13 October 2026), a
   second paper that applies the baseline to AI agents that write and ship code. Its source is
   `software-factory/software-factory.md`; its PDF is `/software-factory.pdf`, listed under
